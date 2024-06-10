@@ -19,13 +19,17 @@ def read_img(path, categories, img_size, channel):
             img = cv.resize(img, (img_size, img_size))
             X.append(img)
             y.append(target)
-    X = np.array(X).reshape(-1, img_size, img_size, channel)
-    X = X / 255.0
+    X = np.array(X).reshape(-1, img_size, img_size, channel) / 225.0
     return X, np.array(y)
 
 
 def read_dataset(data, path, img_size, channel):
     if data <= 2:
+
+        dataset = np.array(pd.read_csv(path + '.csv', header=0))
+        dsize = dataset.shape[0]
+        tmp = dataset.T[:-1].T
+
         if data == 1:
             categories = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5}
             val_idx = [132, 260, 7, 8, 266, 139, 15, 144, 146, 147, 20, 278, 23, 164, 40, 169, 297, 175, 307, 310, 184,
@@ -34,14 +38,6 @@ def read_dataset(data, path, img_size, channel):
             categories = {'Adelie': 0, 'Chinstrap': 1, 'Gentoo': 2}
             val_idx = [54, 44, 98, 26, 27, 90, 70, 148, 71, 82, 94, 156, 210, 176, 162, 167, 181, 182, 202, 206, 169,
                        204, 172, 177, 155, 316, 339, 222, 219, 325, 304]
-
-        dataset = np.array(pd.read_csv(path + '.csv', header=0))
-
-        dsize = dataset.shape[0]
-        k = len(categories)
-
-        tmp = dataset.T[:-1].T
-        if data == 2:
             island = {'Torgersen': 0, 'Biscoe': 1, 'Dream': 2}
             sex = {np.nan: 0, 'MALE': 1, 'FEMALE': 2}
             for i in range(dsize):
@@ -50,10 +46,15 @@ def read_dataset(data, path, img_size, channel):
 
         samples = np.array([[float(num) for num in row] for row in tmp])
         samples = MinMaxScaler().fit_transform(samples)
-
         targets = dataset.T[-1]
         for i in range(dsize):
             targets[i] = categories[targets[i]]
+
+        train_idx = list(set(range(dsize)) - set(val_idx))
+        X_train = samples[train_idx]
+        X_val = samples[val_idx]
+        y_train = targets[train_idx]
+        y_val = targets[val_idx]
 
         # c = []
         # var = []
@@ -69,13 +70,6 @@ def read_dataset(data, path, img_size, channel):
         # for i in range(k):
         #     x.append(c[i]*var[i])
         # print(x)
-        # exit(0)
-
-        train_idx = list(set(range(dsize)) - set(val_idx))
-        X_train = samples[train_idx]
-        X_val = samples[val_idx]
-        y_train = targets[train_idx]
-        y_val = targets[val_idx]
 
     else:
         if data == 3:
@@ -88,6 +82,5 @@ def read_dataset(data, path, img_size, channel):
 
         X_train, y_train = read_img(path + 'train/', categories, img_size, channel)
         X_val, y_val = read_img(path + 'val/', categories, img_size, channel)
-        k = 10
 
-    return X_train, y_train, X_val, y_val, k
+    return X_train, y_train, X_val, y_val, X_train.shape[0], len(categories)
