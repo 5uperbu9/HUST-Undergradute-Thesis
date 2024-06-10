@@ -2,23 +2,24 @@ import numpy as np
 from scipy.stats import entropy
 
 
-class Entropy:
+class UncertaintyCalc:
 
-    def __init__(self, train_size, cdd_size):
-        self.train_size = train_size
+    def __init__(self, n, cdd_size):
+        self.n = n
         self.cdd_size = cdd_size
 
     def cdd_set_sampling(self, labelled, probs_, u=0):
 
-        unlabelled = list(set(range(self.train_size)) - set(labelled))
-        unlabelled_length = len(unlabelled)
-        if unlabelled_length <= self.cdd_size:
+        unlabelled = list(set(range(self.n)) - set(labelled))
+        U_size = len(unlabelled)
+        if U_size <= self.cdd_size:
             return unlabelled
+
         probs = probs_[unlabelled].copy()
         if u == 0:
             max_prob = np.max(probs, axis=1)
             max_idx = np.argmax(probs, axis=1)
-            for i in range(unlabelled_length):
+            for i in range(U_size):
                 probs[i][max_idx[i]] = 0
             second_max_prob = np.max(probs, axis=1)
 
