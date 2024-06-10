@@ -24,18 +24,18 @@ class CoresetGreedy:
     def k_center_greedy(self, cdd_set, labelled_probs, cdd_probs):
 
         centers = []
-        dist = self.JSD(labelled_probs, cdd_probs)
+        sim = self.JSD(labelled_probs, cdd_probs)
 
         while len(centers) < self.batch_size:
-            min_dist = np.min(np.array(dist), axis=0)  # 最近的中心点的距离
+            min_dist = np.min(np.array(sim), axis=0)  # 最近的中心点的距离
             max_idx = np.argmax(min_dist)  # 最远的点
 
             centers.append(cdd_set[max_idx])
-            dist.append(self.JSD(cdd_probs[max_idx], cdd_probs))
+            sim.append(self.JSD(cdd_probs[max_idx], cdd_probs))
             del min_dist, max_idx
 
         return centers
 
-    def batch_choose(self, labelled, cdd_set, probs):
+    def batch_sampling(self, labelled, cdd_set, probs):
         new_batch = self.k_center_greedy(cdd_set, probs[labelled], probs[cdd_set])
         return new_batch
