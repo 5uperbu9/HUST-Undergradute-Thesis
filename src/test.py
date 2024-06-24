@@ -99,32 +99,32 @@ def size_test():
     X_train, y_train, X_val, y_val, n, k = read_dataset(4, root + path, 28, 1)
     random_seed = np.array(pd.read_csv(test_root + path + '/random_seed.csv', header=None)).tolist()
 
-    # with open(test_root + path + '/cdd_size.csv', 'w', newline='') as file:
-    #     writer = csv.writer(file)
-    #
-    #     for e in range(1):
-    #         for t in range(4):
-    #             # initial_seed = initial_seeding(4, train_size, batch_size, X_train)
-    #             initial_seed = random_seed[e]
-    #             query_time, acc = batch_al_test(X_train, y_train, X_val, y_val, n, k, initial_seed,
-    #                                             16, 64 * (2 ** t), 28, 1, [0.9, 15], 2)
-    #             writer.writerow(acc)
+    with open(test_root + path + '/cdd_size.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+    
+        for e in range(epochs):
+            for t in range(4):
+                # initial_seed = initial_seeding(4, train_size, batch_size, X_train)
+                initial_seed = random_seed[e]
+                query_time, acc = batch_al_test(X_train, y_train, X_val, y_val, n, k, initial_seed,
+                                                16, 64 * (2 ** t), 28, 1, [0.9, 15], 2)
+                writer.writerow(acc)
 
     with open(test_root + path + '/batch_size .csv', 'w', newline='') as file:
         writer = csv.writer(file)
 
-        for e in range(5):
+        for e in range(epochs):
             for t in range(4):
                 # initial_seed = initial_seeding(4, train_size, batch_size, X_train)
-                initial_seed = random_seed[e+4]
+                initial_seed = random_seed[e]
                 query_time, acc = batch_al_test(X_train, y_train, X_val, y_val, n, k, initial_seed,
                                                 8 * (2 ** t), 256, 28, 1, [0.9, int(32/(2 ** t))], 2)
                 writer.writerow(acc)
 
 
 if __name__ == '__main__':
-    # model_test()
-    # initial_test()
-    # method_test()
-    # uncertainty_test()
+    model_test()
+    initial_test()
+    method_test()
+    uncertainty_test()
     size_test()
