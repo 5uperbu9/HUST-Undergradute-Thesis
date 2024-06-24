@@ -4,3 +4,5 @@ penguins size: https://www.kaggle.com/datasets/parulpandey/palmer-archipelago-an
 dermatology: https://www.kaggle.com/datasets/olcaybolat1/dermatology-dataset-classification
 
 tomato leaf disease: https://www.kaggle.com/datasets/kaustubhb999/tomatoleaf
+
+MNIST: https://opendatalab.com/OpenDataLab/MNIST
